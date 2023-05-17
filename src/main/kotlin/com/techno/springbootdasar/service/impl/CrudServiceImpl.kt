@@ -3,6 +3,7 @@ package com.techno.springbootdasar.service.impl
 import com.techno.springbootdasar.dto.request.CrudDto
 import com.techno.springbootdasar.dto.response.JWTSubject
 import com.techno.springbootdasar.entity.User
+import com.techno.springbootdasar.exception.CustomExceptionHandler
 import com.techno.springbootdasar.repository.UserRepository
 import com.techno.springbootdasar.service.CrudService
 import org.springframework.stereotype.Service
@@ -61,6 +62,9 @@ class CrudServiceImpl(
     override fun login(username: String?, password: String?):User {
         val user = exampleRepository.findByEmailPassword(username)
         val temp = User(0,"","","","")
+        if(user == null){
+            return temp
+        }
         if(password.equals(user!!.password)){
             return user
         }else{
