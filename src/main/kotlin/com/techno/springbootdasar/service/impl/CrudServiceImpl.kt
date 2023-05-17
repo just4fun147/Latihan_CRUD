@@ -1,6 +1,7 @@
 package com.techno.springbootdasar.service.impl
 
-import com.techno.springbootdasar.dto.CrudDto
+import com.techno.springbootdasar.dto.request.CrudDto
+import com.techno.springbootdasar.dto.response.JWTSubject
 import com.techno.springbootdasar.entity.User
 import com.techno.springbootdasar.repository.UserRepository
 import com.techno.springbootdasar.service.CrudService
@@ -17,18 +18,32 @@ class CrudServiceImpl(
 
     override fun exampleById(id: Long): CrudDto {
         val exampleEntity = exampleRepository.findById(id)
-        return CrudDto(name = exampleEntity.get().name)
+        return CrudDto(
+            name = exampleEntity.get().name,
+            username = exampleEntity.get().username,
+            email = exampleEntity.get().email,
+            password = exampleEntity.get().password)
+    }
+    override fun exampleByIds(id: Long): JWTSubject {
+        val exampleEntity = exampleRepository.findById(id)
+        return JWTSubject(
+            id = id,
+            name = exampleEntity.get().name,
+            username = exampleEntity.get().username,
+            email = exampleEntity.get().email)
     }
 
     override fun exampleGetAll(): List<CrudDto> {
         val exampleEntities = exampleRepository.findAll()
         val result = mutableListOf<CrudDto>()
         for(example in exampleEntities){
-            result.add(CrudDto(
+            result.add(
+                CrudDto(
                 name = example.name,
                 username = example.username,
                 email = example.email,
-                password = example.password,))
+                password = example.password,)
+            )
         }
         return result
     }
@@ -41,5 +56,15 @@ class CrudServiceImpl(
 
     override fun exampleDelete(id: Long) {
         exampleRepository.deleteById(id)
+    }
+
+    override fun login(username: String?, password: String?):User {
+        val user = exampleRepository.findByEmailPassword(username)
+        val temp = User(0,"","","","")
+        if(password.equals(user!!.password)){
+            return user
+        }else{
+            return temp
+        }
     }
 }

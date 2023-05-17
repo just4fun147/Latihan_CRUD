@@ -1,4 +1,4 @@
-package com.techno.springbootdasar.dto
+package com.techno.springbootdasar.dto.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

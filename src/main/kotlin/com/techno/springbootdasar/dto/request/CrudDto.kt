@@ -1,4 +1,4 @@
-package com.techno.springbootdasar.dto
+package com.techno.springbootdasar.dto.request
 
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotEmpty

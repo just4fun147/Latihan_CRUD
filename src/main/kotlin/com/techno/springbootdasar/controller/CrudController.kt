@@ -1,12 +1,18 @@
 package com.techno.springbootdasar.controller
 
-import com.techno.springbootdasar.dto.BaseResponseDto
-import com.techno.springbootdasar.dto.CrudDto
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.techno.springbootdasar.dto.response.BaseResponseDto
+import com.techno.springbootdasar.dto.request.CrudDto
+import com.techno.springbootdasar.dto.request.LoginDto
+import com.techno.springbootdasar.dto.request.ReqDecodeJWT
+import com.techno.springbootdasar.dto.response.JWTSubject
 import com.techno.springbootdasar.service.CrudService
+import com.techno.springjwt.util.JWTGenerator
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.util.regex.Pattern
+import java.io.FileReader
 import javax.validation.Valid
 
 @RestController
@@ -78,5 +84,44 @@ class CrudController(
                 data = ""
             )
         )
+    }
+
+    @PostMapping(
+        value = ["/login"],
+        produces =["application/json"],
+        consumes = ["application/json"]
+    )
+    fun loginUser(@Valid @RequestBody request: LoginDto):ResponseEntity<BaseResponseDto<Any>>{
+        val result = userService.login(request.username,request.password)
+        if(result.id!!.toInt()!=0){
+//            val token = JWTGenerator().createJWT(result.id, result.name!!, result.username!!,result.email!!)
+            val token = JWTGenerator().createJWT(result.id, result.id)
+            return ResponseEntity.ok(
+                BaseResponseDto(
+                    status = "T",
+                    message = "Login Success",
+                    data = token
+                )
+            )
+        }else{
+            return ResponseEntity.ok(
+                BaseResponseDto(
+                    status = "F",
+                    message = "Invalid Username or Password",
+                    data = ""
+                )
+            )
+        }
+    }
+
+    @PostMapping("/validateLogin")
+    fun decodeJWT(@RequestBody request: ReqDecodeJWT): ResponseEntity<BaseResponseDto<Any>>{
+        val claim = JWTGenerator().decodeJWT(request.token)
+        val result = userService.exampleByIds(claim)
+        return ResponseEntity.ok(BaseResponseDto(
+            status = "T",
+            message = "Success Decode JWT",
+            data = result
+        ))
     }
 }
