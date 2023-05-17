@@ -24,7 +24,11 @@ class CrudServiceImpl(
         val exampleEntities = exampleRepository.findAll()
         val result = mutableListOf<CrudDto>()
         for(example in exampleEntities){
-            result.add(CrudDto(name = example.name))
+            result.add(CrudDto(
+                name = example.name,
+                username = example.username,
+                email = example.email,
+                password = example.password,))
         }
         return result
     }
