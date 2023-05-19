@@ -7,3 +7,7 @@ name : String
 username : String (unique)
 email : String (unique)
 password : String
+
+Validation
+Token JWT
+Interceptor
