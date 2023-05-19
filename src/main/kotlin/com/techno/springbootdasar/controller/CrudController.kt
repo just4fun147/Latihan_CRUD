@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.io.FileReader
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 @RestController
@@ -115,8 +116,9 @@ class CrudController(
     }
 
     @PostMapping("/validateLogin")
-    fun decodeJWT(@RequestBody request: ReqDecodeJWT): ResponseEntity<BaseResponseDto<Any>>{
-        val claim = JWTGenerator().decodeJWT(request.token)
+    fun decodeJWT(request: HttpServletRequest): ResponseEntity<BaseResponseDto<Any>>{
+        val token = request.getHeader("authToken")
+        val claim = JWTGenerator().decodeJWT(token)
         val result = userService.exampleByIds(claim)
         return ResponseEntity.ok(BaseResponseDto(
             status = "T",
